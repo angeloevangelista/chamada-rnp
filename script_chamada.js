@@ -17,7 +17,7 @@
 
   var studentsString = studentNames.toString();
 
-  fetch(`http://localhost:3333/?students=${studentsString}`, {
+  fetch(`https://chamada-rnp.herokuapp.com/?students=${studentsString}`, {
     method: "GET",
   })
     .then((response) => response.blob())

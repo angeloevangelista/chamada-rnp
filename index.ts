@@ -8,7 +8,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// http://localhost:3333/?students=angelo,ana,anderson,teste
+app.get("/help", (request, response) => {
+  const filePath = path.join(__dirname, "script_chamada.js");
+
+  return response.sendFile(filePath);
+});
 
 app.get("/", (request, response) => {
   let { students } = request.query;
