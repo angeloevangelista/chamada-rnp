@@ -8,11 +8,11 @@
   let studentNames = [];
 
   for (let i = 0; i < studentsList.length; i++) {
-    const studentsName =
+    const studentName =
       studentsList[i].children[0].children[0].children[0].children[1]
         .children[0].children[0].innerText;
 
-    studentNames.push(studentsName);
+    studentNames.push(studentName);
   }
 
   var studentsString = studentNames.toString();
@@ -26,8 +26,8 @@
       var a = document.createElement("a");
       a.href = url;
       a.download = "chamada.txt";
-      document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+      document.body.appendChild(a);
       a.click();
-      a.remove(); //afterwards we remove the element again
+      a.remove();
     });
 })();
