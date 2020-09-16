@@ -9,7 +9,11 @@ app.use(express.json());
 app.use(cors());
 
 app.get("/help", (request, response) => {
-  const filePath = path.join(__dirname, "script_chamada.js");
+  const { original } = request.query;
+
+  const scriptName = original ? "script_chamada.js" : "script_chamada.min.js";
+
+  const filePath = path.join(__dirname, scriptName);
 
   return response.sendFile(filePath);
 });
