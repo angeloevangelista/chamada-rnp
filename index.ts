@@ -12,7 +12,7 @@ app.use(cors());
 
 app.get("/help", (request, response) => {
   const help = {
-    message: `To use copy and paste the "script" in "console" of a RNP Room.`,
+    message: `To use this service you just need to copy and paste the "script" in "console" of a RNP Room.`,
     script: `https://chamada-rnp.herokuapp.com/help/script`,
   };
 
@@ -30,7 +30,7 @@ app.get("/help/script", (request, response) => {
 app.get("/script", (request, response) => {
   const { original } = request.query;
 
-  const scriptName = original ? "script_chamada.min.js" : "script_chamada.js";
+  const scriptName = original ? "script_chamada.js" : "script_chamada.min.js";
 
   const scriptPath = path.join(__dirname, scriptsFolder, scriptName);
 
