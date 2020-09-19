@@ -45,10 +45,49 @@ app.get("/script", (request, response) => {
   return response.send(fileContent);
 });
 
-app.get("/", (resquest, response) =>
-  response.json({
-    message: `Access the /help for more details. `,
-  })
-);
+app.get("/", (request, response) => {
+  let { students } = request.query;
+
+  if (!students) {
+    return response.json({
+      message: `Access the /help for more details. `,
+      error: '"students" não encontrado.',
+    });
+  }
+
+  students = String(students);
+
+  const serializedStudents = students.split(",");
+
+  const formattedList = `Chamada ${new Date().toLocaleDateString()}
+
+${serializedStudents.map((s) => `${s}`)}
+  `.replace(/,/gi, "\n");
+
+  fs.writeFile("./chamada.txt", formattedList, function (err) {
+    if (err) {
+      return response.json({
+        success: false,
+        message: err,
+      });
+    }
+  });
+
+  const filePath = path.join(__dirname, "chamada.txt");
+
+  fs.readFile(filePath, (err, file) => {
+    if (err) {
+      console.log(err);
+    } else {
+      response.writeHead(200, {
+        "Content-disposition": `attachment;filename=chamada.txt`,
+      });
+
+      response.write(file, "binary");
+
+      return response.end(undefined, "binary");
+    }
+  });
+});
 
 app.listen(process.env.PORT || 3333, () => console.log("The app is running"));
