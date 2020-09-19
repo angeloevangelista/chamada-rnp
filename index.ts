@@ -2,6 +2,8 @@ import fs from "fs";
 import cors from "cors";
 import path from "path";
 import express from "express";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 const scriptsFolder = "scripts";
 
@@ -12,8 +14,8 @@ app.use(cors());
 
 app.get("/help", (request, response) => {
   const help = {
-    message: `To use this service you just need to copy and paste the "script" in "console" of a RNP Room.`,
-    script: `https://chamada-rnp.herokuapp.com/help/script`,
+    message: `To use this service you just need to copy and paste the script in console of a RNP Room.`,
+    route_to_script: `https://chamada-rnp.herokuapp.com/help/script`,
   };
 
   return response.json(help);
@@ -50,8 +52,8 @@ app.get("/", (request, response) => {
 
   if (!students) {
     return response.json({
-      message: `Access the /help for more details. `,
-      error: '"students" não encontrado.',
+      message: `Access /help for more details. `,
+      error: "students param not found.",
     });
   }
 
@@ -59,7 +61,13 @@ app.get("/", (request, response) => {
 
   const serializedStudents = students.split(",");
 
-  const formattedList = `Chamada ${new Date().toLocaleDateString()}
+  const titleTemplate = "'Chamada dia' MM/dd/yyyy";
+
+  const formattedTitle = format(new Date(), titleTemplate, {
+    locale: ptBR,
+  });
+
+  const formattedList = `${formattedTitle}
 
 ${serializedStudents.map((s) => `${s}`)}
   `.replace(/,/gi, "\n");
