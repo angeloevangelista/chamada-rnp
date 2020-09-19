@@ -3,64 +3,52 @@ import cors from "cors";
 import path from "path";
 import express from "express";
 
+const scriptsFolder = "scripts";
+
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
 app.get("/help", (request, response) => {
+  const help = {
+    message: `To use copy and paste the "script" in "console" of a RNP Room.`,
+    script: `https://chamada-rnp.herokuapp.com/help/script`,
+  };
+
+  return response.json(help);
+});
+
+app.get("/help/script", (request, response) => {
+  const scriptName = "call_script.js";
+
+  const scriptPath = path.join(__dirname, scriptsFolder, scriptName);
+
+  return response.sendFile(scriptPath);
+});
+
+app.get("/script", (request, response) => {
   const { original } = request.query;
 
-  const scriptName = original ? "script_chamada.js" : "script_chamada.min.js";
+  const scriptName = original ? "script_chamada.min.js" : "script_chamada.js";
 
-  const filePath = path.join(__dirname, scriptName);
+  const scriptPath = path.join(__dirname, scriptsFolder, scriptName);
 
-  return response.sendFile(filePath);
-});
-
-app.get("/", (request, response) => {
-  let { students } = request.query;
-
-  if (!students) {
-    return response.json({
-      success: false,
-      message: '"students" não encontrado.',
-    });
+  if (original) {
+    return response.sendFile(scriptPath);
   }
 
-  students = String(students);
+  response.type("txt");
 
-  const serializedStudents = students.split(",");
+  const fileContent = fs.readFileSync(scriptPath).toString();
 
-  const formattedList = `Chamada ${new Date().toLocaleDateString()}
-
-${serializedStudents.map((s) => `${s}`)}
-  `.replace(/,/gi, "\n");
-
-  fs.writeFile("./chamada.txt", formattedList, function (err) {
-    if (err) {
-      return response.json({
-        success: false,
-        message: err,
-      });
-    }
-  });
-
-  const filePath = path.join(__dirname, "chamada.txt");
-
-  fs.readFile(filePath, (err, file) => {
-    if (err) {
-      console.log(err);
-    } else {
-      response.writeHead(200, {
-        "Content-disposition": `attachment;filename=chamada.txt`,
-      });
-
-      response.write(file, "binary");
-
-      return response.end(undefined, "binary");
-    }
-  });
+  return response.send(fileContent);
 });
 
-app.listen(process.env.PORT || 3333, () => console.log("running"));
+app.get("/", (resquest, response) =>
+  response.json({
+    message: `Access the /help for more details. `,
+  })
+);
+
+app.listen(process.env.PORT || 3333, () => console.log("The app is running"));

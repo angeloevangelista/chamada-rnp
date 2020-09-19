@@ -31,3 +31,9 @@
       a.remove();
     });
 })();
+
+
+// fetch(`https://chamada-rnp.herokuapp.com/help?original`, {
+//     method: "GET",
+//   }
+// ).then(response => response.blob()).then(r => console.log(r));
